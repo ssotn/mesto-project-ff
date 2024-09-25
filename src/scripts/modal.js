@@ -1,20 +1,30 @@
 export function openModalWindow(e, win) {
-    win.classList.add('popup_is-opened');
+    const closeWinBtn = win.querySelector('.popup__close');    
+    
+    document.addEventListener('keydown', onEscPress);
+    document.addEventListener('click', onOverlayClick);
+    closeWinBtn.addEventListener('click', closeModalWindow);
 
-    const closeBtn = win.querySelector('.popup__close');
-    closeBtn.addEventListener('click', () => closeModalWindow({win}));
+    win.classList.add('popup_is-opened');
 }
 
-function closeModalWindow(params) {
-    const { win } = params;
+function closeModalWindow(e) {
+    const win = document.querySelector('.popup_is-opened');
+    
+    document.removeEventListener('keydown', onEscPress);
+    document.addEventListener('click', onOverlayClick);
     win.classList.remove('popup_is-opened');
 }
 
-function onOverlayClick(e){
-
+function onOverlayClick(e) {
+    if(e.target.classList.contains('popup')) {
+        closeModalWindow(e);
+    }
 }
 
-function onEscClick(e){
-
+function onEscPress(e) {    
+    if (e.key === 'Escape') {        
+        closeModalWindow(e);
+    }
 }
 
