@@ -17,6 +17,9 @@ const nameInput = editProfileWindow.querySelector('.popup__input_type_name');
 const jobInput = editProfileWindow.querySelector('.popup__input_type_description');
 
 const newCardWindow = document.querySelector('.popup_type_new-card');
+const newCardName = newCardWindow.querySelector('.popup__input_type_card-name');
+const newCardUrl = newCardWindow.querySelector('.popup__input_type_url');
+
 const certanCardImage = document.querySelector('.popup__content_content_image');
 
 
@@ -48,7 +51,15 @@ function handleFormSubmit(e) {
     closeModalWindow();
 }
 
-profileEditButton.addEventListener('click', (e) => {
+function handleFormAddCardSubmit(e) {
+    e.preventDefault();
+    cardsContainer.prepend(createCard(newCardName.value, newCardUrl.value, removeCard));
+    
+    document.forms['new-place'].reset();
+    closeModalWindow();
+}
+
+profileEditButton.addEventListener('click', e => {
     editProfileWindow.addEventListener('submit', handleFormSubmit);
     nameInput.value = nameDisplay.textContent;
     jobInput.value = jobDisplay.textContent;
@@ -57,8 +68,10 @@ profileEditButton.addEventListener('click', (e) => {
 
 });
 
+profileAddButton.addEventListener('click', e => {
+    newCardWindow.addEventListener('submit', handleFormAddCardSubmit);
+    openModalWindow(e, newCardWindow);
+});
 
-
-profileAddButton.addEventListener('click', (e) => openModalWindow(e, newCardWindow));
 //places.addEventListener('click', (e) => openModalWindow(e, certanCardImage));
 
