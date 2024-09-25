@@ -12,7 +12,7 @@ function closeModalWindow(e) {
     const win = document.querySelector('.popup_is-opened');
     
     document.removeEventListener('keydown', onEscPress);
-    document.addEventListener('click', onOverlayClick);
+    document.removeEventListener('click', onOverlayClick);
     win.classList.remove('popup_is-opened');
 }
 
