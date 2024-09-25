@@ -8,7 +8,7 @@ export function openModalWindow(e, win) {
     win.classList.add('popup_is-opened');
 }
 
-function closeModalWindow(e) {
+export function closeModalWindow(e) {
     const win = document.querySelector('.popup_is-opened');
     
     document.removeEventListener('keydown', onEscPress);
