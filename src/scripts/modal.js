@@ -9,8 +9,11 @@ export function openModalWindow(win) {
     document.addEventListener('click', onOverlayClick);
     closeWinBtn?.addEventListener('click', closeModalWindow);
 
+    if (!win.classList.contains('popup_is-animated')){
+        win.classList.add('popup_is-animated');
+    }
+        
     win.classList.add('popup_is-opened');
-    win.classList.add('popup_is-animated');
 }
 /**
  * метод закрытия модального окна, экспортируемый
