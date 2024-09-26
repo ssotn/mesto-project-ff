@@ -23,20 +23,23 @@ const newCardUrl = newCardWindow.querySelector('.popup__input_type_url');
 const certanCardImage = document.querySelector('.popup__content_content_image');
 
 
-const createCard = (name, link, deleteCallback) => {
+const createCard = (name, link, deleteCallback, likeCallback) => {
     const cardElement = template.querySelector('.places__item').cloneNode(true);
+    const cardLikeButton = cardElement.querySelector('.card__like-button');
     
     cardElement.querySelector('.card__title').textContent = name;
     cardElement.querySelector('.card__image').src = link;
     cardElement.querySelector('.card__image').alt = name;
     cardElement.querySelector('.card__delete-button').addEventListener('click', () => deleteCallback(cardElement));
+    cardLikeButton.addEventListener('click', () => likeCallback(cardLikeButton));
 
     return cardElement;
 }
 
 const removeCard = card => card.remove();
+const onLikeCard = cardLike => cardLike.classList.toggle('card__like-button_is-active');
 
-const addCards = () => initialCards.forEach(elem => cardsContainer.append(createCard(elem.name, elem.link, removeCard)));
+const addCards = () => initialCards.forEach(elem => cardsContainer.append(createCard(elem.name, elem.link, removeCard, onLikeCard)));
 
 addCards();
 
