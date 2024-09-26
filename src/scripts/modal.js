@@ -6,6 +6,7 @@ export function openModalWindow(e, win) {
     closeWinBtn?.addEventListener('click', closeModalWindow);
 
     win.classList.add('popup_is-opened');
+    win.classList.add('popup_is-animated');
 }
 
 export function closeModalWindow(e) {
