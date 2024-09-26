@@ -47,7 +47,7 @@ const onImgClick = (e, imgName, imgLink, cardPopUp) => {
     cardImagePopUpImage.alt = imgName;
     cardImagePopUpCaption.textContent = imgName;
  
-    openModalWindow(e, cardPopUp);
+    openModalWindow(cardPopUp);
  };
 
 const addCards = () => initialCards.forEach(elem => cardsContainer.append(createCard(elem.name, elem.link, removeCard, onLikeCard, onImgClick)));
@@ -78,12 +78,12 @@ profileEditButton.addEventListener('click', e => {
     nameInput.value = nameDisplay.textContent;
     jobInput.value = jobDisplay.textContent;
 
-    openModalWindow(e, editProfileWindow);
+    openModalWindow(editProfileWindow);
 
 });
 
 profileAddButton.addEventListener('click', e => {
     newCardWindow.addEventListener('submit', handleFormAddCardSubmit);
-    openModalWindow(e, newCardWindow);
+    openModalWindow(newCardWindow);
 });
 
