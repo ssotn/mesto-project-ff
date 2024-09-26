@@ -20,26 +20,37 @@ const newCardWindow = document.querySelector('.popup_type_new-card');
 const newCardName = newCardWindow.querySelector('.popup__input_type_card-name');
 const newCardUrl = newCardWindow.querySelector('.popup__input_type_url');
 
-const certanCardImage = document.querySelector('.popup__content_content_image');
+const cardImagePopUp = document.querySelector('.popup_type_image');
+const cardImagePopUpCaption = cardImagePopUp.querySelector('.popup__caption');
+const cardImagePopUpImage = cardImagePopUp.querySelector('.popup__image');
 
 
-const createCard = (name, link, deleteCallback, likeCallback) => {
+const createCard = (name, link, deleteCallback, likeCallback, imgPopUpCallback) => {
     const cardElement = template.querySelector('.places__item').cloneNode(true);
     const cardLikeButton = cardElement.querySelector('.card__like-button');
+    const cardImg = cardElement.querySelector('.card__image');
     
     cardElement.querySelector('.card__title').textContent = name;
     cardElement.querySelector('.card__image').src = link;
     cardElement.querySelector('.card__image').alt = name;
     cardElement.querySelector('.card__delete-button').addEventListener('click', () => deleteCallback(cardElement));
     cardLikeButton.addEventListener('click', () => likeCallback(cardLikeButton));
+    cardImg.addEventListener('click', (e) => imgPopUpCallback(e, name, link, cardImagePopUp));
 
     return cardElement;
 }
 
 const removeCard = card => card.remove();
 const onLikeCard = cardLike => cardLike.classList.toggle('card__like-button_is-active');
+const onImgClick = (e, imgName, imgLink, cardPopUp) => {
+    cardImagePopUpImage.src = imgLink;
+    cardImagePopUpImage.alt = imgName;
+    cardImagePopUpCaption.textContent = imgName;
+ 
+    openModalWindow(e, cardPopUp);
+ };
 
-const addCards = () => initialCards.forEach(elem => cardsContainer.append(createCard(elem.name, elem.link, removeCard, onLikeCard)));
+const addCards = () => initialCards.forEach(elem => cardsContainer.append(createCard(elem.name, elem.link, removeCard, onLikeCard, onImgClick)));
 
 addCards();
 
@@ -75,6 +86,4 @@ profileAddButton.addEventListener('click', e => {
     newCardWindow.addEventListener('submit', handleFormAddCardSubmit);
     openModalWindow(e, newCardWindow);
 });
-
-//places.addEventListener('click', (e) => openModalWindow(e, certanCardImage));
 

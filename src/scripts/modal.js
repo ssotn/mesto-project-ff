@@ -3,7 +3,7 @@ export function openModalWindow(e, win) {
     
     document.addEventListener('keydown', onEscPress);
     document.addEventListener('click', onOverlayClick);
-    closeWinBtn.addEventListener('click', closeModalWindow);
+    closeWinBtn?.addEventListener('click', closeModalWindow);
 
     win.classList.add('popup_is-opened');
 }
