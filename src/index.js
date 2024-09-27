@@ -3,9 +3,10 @@ import initialCards from './scripts/cards.js';
 import { openModalWindow, closeModalWindow } from './scripts/modal.js';
 import { createCard } from './scripts/card.js';
 
-/*шаблон карточки, контейнер карточек*/
+/*шаблон карточки, контейнер карточек, ВСЕ "крестики закрытия" модальных окон*/
 const template = document.querySelector('#card-template').content;
 const cardsContainer = document.querySelector('.places__list');
+const closeButtons = document.querySelectorAll('.popup__close');
 
 /*кнопка редактирования профиля на странице*/
 const profileEditButton = document.querySelector('.profile__edit-button');
@@ -45,21 +46,32 @@ const onImgClick = (imgName, imgLink, cardPopUp) => {
 
 /*метод отправки  - коллбэк для кнопки "Сохранить" на форме Редактирования профиля*/
 const handleFormSubmit = e => {
-    e.preventDefault();
+    e.preventDefault();    
+    const win = e.submitter.closest('.popup');
+
     nameDisplay.textContent = nameInput.value;
     jobDisplay.textContent = jobInput.value;
 
-    closeModalWindow();
+    closeModalWindow(win);
 }
 
 /*метод добавления новой карточки - коллбэк для кнопки "Сохранить" на форме Создания*/
 const handleFormAddCardSubmit = e => {
     e.preventDefault();
-    cardsContainer.prepend(createCard(template, cardImagePopUp, newCardName.value, newCardUrl.value, removeCard, onLikeCard, onImgClick));
-    
+    const win = e.submitter.closest('.popup');
+
+    cardsContainer.prepend(createCard(template, cardImagePopUp, newCardName.value, newCardUrl.value, removeCard, onLikeCard, onImgClick));    
     document.forms['new-place'].reset();
-    closeModalWindow();
+    closeModalWindow(win);
 }
+
+/*пробежались по всем "крестикам закрытия" на странице и навесили на них слушатель*/
+closeButtons.forEach(button => {
+    // находим 1 раз ближайший к крестику попап 
+    const win = button.closest('.popup');
+    // устанавливаем обработчик закрытия на крестик
+    button.addEventListener('click', () => closeModalWindow(win));
+});
 
 /*обработчик клика кнопки Редактировать*/
 profileEditButton.addEventListener('click', e => {
@@ -68,7 +80,6 @@ profileEditButton.addEventListener('click', e => {
     jobInput.value = jobDisplay.textContent;
 
     openModalWindow(editProfileWindow);
-
 });
 
 /*обработчик клика кнопки Создать*/
@@ -76,6 +87,7 @@ profileAddButton.addEventListener('click', e => {
     newCardWindow.addEventListener('submit', handleFormAddCardSubmit);
     openModalWindow(newCardWindow);
 });
+
 
 /*метод заполнения контейнера карточек при загрузке страницы*/
 const addCards = () => initialCards.forEach(elem => cardsContainer.append(createCard(template, cardImagePopUp, elem.name, elem.link, removeCard, onLikeCard, onImgClick)));

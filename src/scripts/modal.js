@@ -3,12 +3,10 @@
  * @param {*} win 
  */
 export function openModalWindow(win) {
-    const closeWinBtn = win.querySelector('.popup__close');    
-    
     document.addEventListener('keydown', onEscPress);
     document.addEventListener('click', onOverlayClick);
-    closeWinBtn?.addEventListener('click', closeModalWindow);
 
+    /*при инициализации страницы ждём добавления класса анимации и только потом добавляем класс окрытия попАпа*/
     if (!win.classList.contains('popup_is-animated')) {
         win.classList.add('popup_is-animated');
         setTimeout(() => win.classList.add('popup_is-opened'), 200);
@@ -18,10 +16,9 @@ export function openModalWindow(win) {
 }
 /**
  * метод закрытия модального окна, экспортируемый
+ * @param {*} win 
  */
-export function closeModalWindow() {
-    const win = document.querySelector('.popup_is-opened');
-    
+export function closeModalWindow(win) {
     document.removeEventListener('keydown', onEscPress);
     document.removeEventListener('click', onOverlayClick);
     win.classList.remove('popup_is-opened');
@@ -31,17 +28,21 @@ export function closeModalWindow() {
  * @param {*} e 
  */
 function onOverlayClick(e) {
+    const win = document.querySelector('.popup_is-opened');
+
     if(e.target.classList.contains('popup')) {
-        closeModalWindow();
+        closeModalWindow(win);
     }
 }
 /**
  * метод закрытия модального окна по нажатию Esc
  * @param {*} e 
  */
-function onEscPress(e) {    
+function onEscPress(e) {
+    const win = document.querySelector('.popup_is-opened');
+
     if (e.key === 'Escape') {        
-        closeModalWindow();
+        closeModalWindow(win);
     }
 }
 
