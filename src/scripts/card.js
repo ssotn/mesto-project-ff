@@ -1,4 +1,3 @@
-
 /**
  * метод создания карточки
  * @param {*} template шаблон карточки
@@ -10,14 +9,14 @@
  * @param {*} imgPopUpCallback метод открытия картинки карточки в модальном окне
  * @returns cardElement
  */
-export function createCard(template, cardImagePopUp, name, link, deleteCallback, likeCallback, imgPopUpCallback) {
+function createCard(template, cardImagePopUp, name, link, deleteCallback, likeCallback, imgPopUpCallback) {
     const cardElement = template.querySelector('.places__item').cloneNode(true);
     const cardLikeButton = cardElement.querySelector('.card__like-button');
     const cardImg = cardElement.querySelector('.card__image');
     
     cardElement.querySelector('.card__title').textContent = name;
-    cardElement.querySelector('.card__image').src = link;
-    cardElement.querySelector('.card__image').alt = name;
+    cardImg.src = link;
+    cardImg.alt = name;
 
     cardElement.querySelector('.card__delete-button').addEventListener('click', () => deleteCallback(cardElement));
     cardLikeButton.addEventListener('click', () => likeCallback(cardLikeButton));
@@ -25,21 +24,19 @@ export function createCard(template, cardImagePopUp, name, link, deleteCallback,
 
     return cardElement;
 }
-
-/**НЕ понятно задание в ТЗ: "...Функции, обрабатывающие события лайка и удаления карточки, также должны находиться в этом файле и экспортироваться из него."
- * зачем сюда переносить удаление и лайк карточки, если метод выше принимает их как коллбэки. Оставлю в index.js пока.
- * 
- * НЕ понятно, почему в ТЗ не упоминается третий коллбэк открытия картинки карточки в попАпе. Его тоже сюда?
- * -но в таком случае мне потребуется импортировать в этот модуль метод открытия модального окна из module.js
- * -импортировать модуль в модуль звучит неразумно - оставлю также в index.js
+/**
+ * метод удаления кароточки со страницы
+ * @param {*} card 
  */
-
-/*
-function onDelete(card) {
+function removeCard(card) {
     card.remove();
 }
-
-function onLikeCard (cardLike) {
+/**
+ * метод для действия поставить-убрать лайк
+ * @param {*} cardLike 
+ */
+function onLikeCard(cardLike) {
     cardLike.classList.toggle('card__like-button_is-active');
 }
-*/
+
+export {createCard, removeCard, onLikeCard}

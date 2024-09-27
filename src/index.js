@@ -1,7 +1,7 @@
 import './pages/index.css';
 import initialCards from './scripts/cards.js';
 import { openModalWindow, closeModalWindow } from './scripts/modal.js';
-import { createCard } from './scripts/card.js';
+import { createCard, removeCard, onLikeCard } from './scripts/card.js';
 
 /*шаблон карточки, контейнер карточек, ВСЕ "крестики закрытия" модальных окон*/
 const template = document.querySelector('#card-template').content;
@@ -31,10 +31,6 @@ const cardImagePopUp = document.querySelector('.popup_type_image');
 const cardImagePopUpCaption = cardImagePopUp.querySelector('.popup__caption');
 const cardImagePopUpImage = cardImagePopUp.querySelector('.popup__image');
 
-/*метод удаления карточки - передаём как коллбэк в createCard*/
-const removeCard = card => card.remove();
-/*метод для действия поставить-убрать лайк карточки - передаём как коллбэк в createCard*/
-const onLikeCard = cardLike => cardLike.classList.toggle('card__like-button_is-active');
 /*метод для открытия картинки карточки в модальном окне - передаём как коллбэк в createCard*/
 const onImgClick = (imgName, imgLink, cardPopUp) => {
     cardImagePopUpImage.src = imgLink;
