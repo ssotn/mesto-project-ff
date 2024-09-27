@@ -3,10 +3,12 @@ import initialCards from './scripts/cards.js';
 import { openModalWindow, closeModalWindow } from './scripts/modal.js';
 import { createCard, removeCard, onLikeCard } from './scripts/card.js';
 
-/*шаблон карточки, контейнер карточек, ВСЕ "крестики закрытия" модальных окон*/
+/*шаблон карточки, контейнер карточек, ВСЕ "крестики закрытия" модальных окон, формы*/
 const template = document.querySelector('#card-template').content;
 const cardsContainer = document.querySelector('.places__list');
 const closeButtons = document.querySelectorAll('.popup__close');
+const profileForm = document.forms['edit-profile']
+const newPlaceForm = document.forms['new-place'];
 
 /*кнопка редактирования профиля на странице*/
 const profileEditButton = document.querySelector('.profile__edit-button');
@@ -41,7 +43,7 @@ const onImgClick = (imgName, imgLink, cardPopUp) => {
 };
 
 /*метод отправки  - коллбэк для кнопки "Сохранить" на форме Редактирования профиля*/
-const handleFormSubmit = e => {
+const handleFormProfileSubmit = e => {
     e.preventDefault();    
     const win = e.submitter.closest('.popup');
 
@@ -52,12 +54,12 @@ const handleFormSubmit = e => {
 }
 
 /*метод добавления новой карточки - коллбэк для кнопки "Сохранить" на форме Создания*/
-const handleFormAddCardSubmit = e => {
+const handleFormAddCardSubmit = () => {
     e.preventDefault();
     const win = e.submitter.closest('.popup');
 
     cardsContainer.prepend(createCard(template, cardImagePopUp, newCardName.value, newCardUrl.value, removeCard, onLikeCard, onImgClick));    
-    document.forms['new-place'].reset();
+    newPlaceForm.reset();
     closeModalWindow(win);
 }
 
@@ -70,8 +72,11 @@ closeButtons.forEach(button => {
 });
 
 /*обработчик клика кнопки Редактировать*/
-profileEditButton.addEventListener('click', e => {
-    editProfileWindow.addEventListener('submit', handleFormSubmit);
+profileEditButton.addEventListener('click', () => {
+    profileForm.addEventListener('submit', handleFormProfileSubmit);
+    /*не понял как воспроизвести утечку памяти. Несколько раз прощёлкал кнопку с дебаггером в этой строке.
+     каждый раз getEventListeners(profileForm) выдаёт массив листенеров с длиной = 1;
+    */
     nameInput.value = nameDisplay.textContent;
     jobInput.value = jobDisplay.textContent;
 
@@ -79,8 +84,9 @@ profileEditButton.addEventListener('click', e => {
 });
 
 /*обработчик клика кнопки Создать*/
-profileAddButton.addEventListener('click', e => {
-    newCardWindow.addEventListener('submit', handleFormAddCardSubmit);
+profileAddButton.addEventListener('click', () => {
+    newPlaceForm.addEventListener('submit', handleFormAddCardSubmit);
+    /*здесь также не смог воспроизвести утечку getEventListeners(newPlaceForm) */
     openModalWindow(newCardWindow);
 });
 
