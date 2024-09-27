@@ -1,26 +1,27 @@
 /**
  * метод создания карточки
- * @param {*} template шаблон карточки
- * @param {*} cardImagePopUp элемент картинка popUp
- * @param {*} name наименование места
- * @param {*} link url картинки в карточке
- * @param {*} deleteCallback метод удаления кароточки со страницы
- * @param {*} likeCallback метод для действия поставить-убрать лайк
- * @param {*} imgPopUpCallback метод открытия картинки карточки в модальном окне
+ * @param {*} params
+ * @argument {*} template шаблон карточки
+ * @argument {*} cardImagePopUp элемент картинка popUp
+ * @argument {*} name наименование места
+ * @argument {*} link url картинки в карточке
+ * @argument {*} deleteCallback метод удаления кароточки со страницы
+ * @argument {*} likeCallback метод для действия поставить-убрать лайк
+ * @argument {*} imgPopUpCallback метод открытия картинки карточки в модальном окне
  * @returns cardElement
  */
-function createCard(template, cardImagePopUp, name, link, deleteCallback, likeCallback, imgPopUpCallback) {
+function createCard({template, cardImagePopUp, cardName, carLink, deleteCallback, likeCallback, imgPopUpCallback}) {
     const cardElement = template.querySelector('.places__item').cloneNode(true);
     const cardLikeButton = cardElement.querySelector('.card__like-button');
     const cardImg = cardElement.querySelector('.card__image');
     
-    cardElement.querySelector('.card__title').textContent = name;
-    cardImg.src = link;
-    cardImg.alt = name;
+    cardElement.querySelector('.card__title').textContent = cardName;
+    cardImg.src = carLink;
+    cardImg.alt = cardName;
 
     cardElement.querySelector('.card__delete-button').addEventListener('click', () => deleteCallback(cardElement));
     cardLikeButton.addEventListener('click', () => likeCallback(cardLikeButton));
-    cardImg.addEventListener('click', () => imgPopUpCallback(name, link, cardImagePopUp));
+    cardImg.addEventListener('click', () => imgPopUpCallback(cardName, carLink, cardImagePopUp));
 
     return cardElement;
 }

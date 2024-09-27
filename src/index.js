@@ -54,11 +54,22 @@ const handleFormProfileSubmit = e => {
 }
 
 /*метод добавления новой карточки - коллбэк для кнопки "Сохранить" на форме Создания*/
-const handleFormAddCardSubmit = () => {
+const handleFormAddCardSubmit = e => {
     e.preventDefault();
     const win = e.submitter.closest('.popup');
 
-    cardsContainer.prepend(createCard(template, cardImagePopUp, newCardName.value, newCardUrl.value, removeCard, onLikeCard, onImgClick));    
+    cardsContainer.prepend(
+        createCard({
+            template: template,
+            cardImagePopUp: cardImagePopUp,
+            cardName: newCardName.value,
+            carLink: newCardUrl.value,
+            deleteCallback: removeCard,
+            likeCallback: onLikeCard,
+            imgPopUpCallback: onImgClick
+        })
+    );
+
     newPlaceForm.reset();
     closeModalWindow(win);
 }
@@ -92,6 +103,16 @@ profileAddButton.addEventListener('click', () => {
 
 
 /*метод заполнения контейнера карточек при загрузке страницы*/
-const addCards = () => initialCards.forEach(elem => cardsContainer.append(createCard(template, cardImagePopUp, elem.name, elem.link, removeCard, onLikeCard, onImgClick)));
+const addCards = () => initialCards.forEach(elem => cardsContainer.append(
+    createCard({
+        template: template,
+        cardImagePopUp: cardImagePopUp,
+        cardName: elem.name,
+        carLink: elem.link,
+        deleteCallback: removeCard,
+        likeCallback: onLikeCard,
+        imgPopUpCallback: onImgClick
+    })
+));
 
 addCards();
