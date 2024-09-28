@@ -9,14 +9,14 @@
 @import url('./__image/popup__image.css');
 
 .popup {
-  font-family: 'Inter', Arial, sans-serif;
-  /*display: none;*/
-  position: absolute;
-  visibility: hidden;
+  font-family: "Inter", Arial, sans-serif;
+  display: flex;
+  position: fixed;
   align-items: center;
   justify-content: center;
-  background-color: rgba(0, 0, 0, .5);
-  position: fixed;
+  background-color: rgba(0, 0, 0, 0.5);
+  visibility: hidden;
+  opacity: 0;
   top: 0;
   left: 0;
   bottom: 0;
