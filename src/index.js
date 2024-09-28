@@ -84,10 +84,6 @@ closeButtons.forEach(button => {
 
 /*обработчик клика кнопки Редактировать*/
 profileEditButton.addEventListener('click', () => {
-    profileForm.addEventListener('submit', handleFormProfileSubmit);
-    /*не понял как воспроизвести утечку памяти. Несколько раз прощёлкал кнопку с дебаггером в этой строке.
-     каждый раз getEventListeners(profileForm) выдаёт массив листенеров с длиной = 1;
-    */
     nameInput.value = nameDisplay.textContent;
     jobInput.value = jobDisplay.textContent;
 
@@ -96,11 +92,12 @@ profileEditButton.addEventListener('click', () => {
 
 /*обработчик клика кнопки Создать*/
 profileAddButton.addEventListener('click', () => {
-    newPlaceForm.addEventListener('submit', handleFormAddCardSubmit);
-    /*здесь также не смог воспроизвести утечку getEventListeners(newPlaceForm) */
     openModalWindow(newCardWindow);
 });
 
+/*листенеры на submit форм*/
+profileForm.addEventListener('submit', handleFormProfileSubmit);
+newPlaceForm.addEventListener('submit', handleFormAddCardSubmit);
 
 /*метод заполнения контейнера карточек при загрузке страницы*/
 const addCards = () => initialCards.forEach(elem => cardsContainer.append(
