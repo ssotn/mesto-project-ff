@@ -14,6 +14,19 @@
   margin-bottom: 0;
 }
 
+.popup__input_type_error {  
+  border-bottom-color: #FF0000;
+}
+
+.popup__error_visible {
+  font-family: Inter;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 14.52px;
+  text-align: left;
+  color: #FF0000;
+}
+
 @media screen and (max-width: 568px) {
   .popup__title {
     font-size: 12px;

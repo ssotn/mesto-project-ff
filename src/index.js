@@ -2,6 +2,7 @@ import './pages/index.css';
 import initialCards from './scripts/cards.js';
 import { openModalWindow, closeModalWindow } from './scripts/modal.js';
 import { createCard, removeCard, onLikeCard } from './scripts/card.js';
+import { enableValidation } from './scripts/validation.js';
 
 /*шаблон карточки, контейнер карточек, ВСЕ "крестики закрытия" модальных окон, формы*/
 const template = document.querySelector('#card-template').content;
@@ -41,6 +42,15 @@ const onImgClick = (imgName, imgLink, cardPopUp) => {
  
     openModalWindow(cardPopUp);
 };
+
+const validationConfig = {
+    formSelector: '.popup__form',
+    inputSelector: '.popup__input',
+    submitButtonSelector: '.popup__button',
+    inactiveButtonClass: 'popup__button_disabled',
+    inputErrorClass: 'popup__input_type_error',
+    errorClass: 'popup__error_visible',
+}
 
 /*метод отправки  - коллбэк для кнопки "Сохранить" на форме Редактирования профиля*/
 const handleFormProfileSubmit = e => {
@@ -83,7 +93,7 @@ closeButtons.forEach(button => {
 });
 
 /*обработчик клика кнопки Редактировать*/
-profileEditButton.addEventListener('click', () => {
+profileEditButton.addEventListener('click', () => {    
     nameInput.value = nameDisplay.textContent;
     jobInput.value = jobDisplay.textContent;
 
@@ -113,3 +123,5 @@ const addCards = () => initialCards.forEach(elem => cardsContainer.append(
 ));
 
 addCards();
+
+enableValidation(validationConfig);
