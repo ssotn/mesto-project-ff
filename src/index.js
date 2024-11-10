@@ -104,6 +104,7 @@ profileEditButton.addEventListener('click', () => {
 /*обработчик клика кнопки Создать*/
 profileAddButton.addEventListener('click', () => {
     openModalWindow(newCardWindow);
+    newPlaceForm.reset();
     clearValidation(editProfileWindow, validationConfig);
 });
 
