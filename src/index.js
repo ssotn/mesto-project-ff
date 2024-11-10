@@ -3,6 +3,7 @@ import initialCards from './scripts/cards.js';
 import { openModalWindow, closeModalWindow } from './scripts/modal.js';
 import { createCard, removeCard, onLikeCard } from './scripts/card.js';
 import { enableValidation, clearValidation } from './scripts/validation.js';
+import { mestoApi } from './scripts/api.js';
 
 /*шаблон карточки, контейнер карточек, ВСЕ "крестики закрытия" модальных окон, формы*/
 const template = document.querySelector('#card-template').content;
@@ -105,7 +106,7 @@ profileEditButton.addEventListener('click', () => {
 profileAddButton.addEventListener('click', () => {
     openModalWindow(newCardWindow);
     newPlaceForm.reset();
-    clearValidation(editProfileWindow, validationConfig);
+    clearValidation(newCardWindow, validationConfig);
 });
 
 /*листенеры на submit форм*/
@@ -113,17 +114,35 @@ profileForm.addEventListener('submit', handleFormProfileSubmit);
 newPlaceForm.addEventListener('submit', handleFormAddCardSubmit);
 
 /*метод заполнения контейнера карточек при загрузке страницы*/
-const addCards = () => initialCards.forEach(elem => cardsContainer.append(
-    createCard({
-        template: template,
-        cardImagePopUp: cardImagePopUp,
-        cardName: elem.name,
-        carLink: elem.link,
-        deleteCallback: removeCard,
-        likeCallback: onLikeCard,
-        imgPopUpCallback: onImgClick
+const addCards = () => {
+    mestoApi.getCards() //дёрнули эндпоинт получения карточек
+    .then(data => {     //получили массив карточек
+        
+        data.forEach(elem => cardsContainer.append( //собираем и отображаем карточки
+            createCard({
+                template: template,
+                cardImagePopUp: cardImagePopUp,
+                cardName: elem.name,
+                carLink: elem.link,
+                deleteCallback: removeCard,
+                likeCallback: onLikeCard,
+                imgPopUpCallback: onImgClick
+            })
+        ));
     })
-));
+    //старый метод заполнения карточек из константного массива
+    /*initialCards.forEach(elem => cardsContainer.append(
+        createCard({
+            template: template,
+            cardImagePopUp: cardImagePopUp,
+            cardName: elem.name,
+            carLink: elem.link,
+            deleteCallback: removeCard,
+            likeCallback: onLikeCard,
+            imgPopUpCallback: onImgClick
+        })
+    ));*/
+}
 
 addCards();
 
