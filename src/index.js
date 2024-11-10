@@ -2,7 +2,7 @@ import './pages/index.css';
 import initialCards from './scripts/cards.js';
 import { openModalWindow, closeModalWindow } from './scripts/modal.js';
 import { createCard, removeCard, onLikeCard } from './scripts/card.js';
-import { enableValidation } from './scripts/validation.js';
+import { enableValidation, clearValidation } from './scripts/validation.js';
 
 /*шаблон карточки, контейнер карточек, ВСЕ "крестики закрытия" модальных окон, формы*/
 const template = document.querySelector('#card-template').content;
@@ -98,11 +98,13 @@ profileEditButton.addEventListener('click', () => {
     jobInput.value = jobDisplay.textContent;
 
     openModalWindow(editProfileWindow);
+    clearValidation(editProfileWindow, validationConfig);
 });
 
 /*обработчик клика кнопки Создать*/
 profileAddButton.addEventListener('click', () => {
     openModalWindow(newCardWindow);
+    clearValidation(editProfileWindow, validationConfig);
 });
 
 /*листенеры на submit форм*/

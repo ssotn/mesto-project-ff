@@ -77,7 +77,7 @@ const hideInputError = (formElement, inputElement) => {
 };
 
 
-export function enableValidation(validationConfig){
+export const enableValidation = validationConfig => {
   // Найдём все формы с указанным классом в DOM,
   // сделаем из них массив методом Array.from
   const formList = Array.from(document.querySelectorAll(validationConfig.formSelector));
@@ -88,4 +88,13 @@ export function enableValidation(validationConfig){
     // передав ей элемент формы
     setEventListeners(formElement);
   });
+}
+
+export const clearValidation = (formElement, validationConfig) => {  
+  const inputList = Array.from(formElement.querySelectorAll(validationConfig.inputSelector));
+  const buttonElement = formElement.querySelector(validationConfig.submitButtonSelector);
+
+  inputList.forEach(inputElement => hideInputError(formElement, inputElement));  
+  buttonElement.classList.add(validationConfig.inactiveButtonClass);
+  buttonElement.disabled = true;
 }
