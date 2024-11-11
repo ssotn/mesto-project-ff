@@ -16,6 +16,7 @@ const newPlaceForm = document.forms['new-place'];
 const profileEditButton = document.querySelector('.profile__edit-button');
 const nameDisplay = document.querySelector(".profile__title");
 const jobDisplay = document.querySelector(".profile__description");
+const profileAvatar = document.querySelector(".profile__image");
 
 /*кнопка добавления новой карточки*/
 const profileAddButton = document.querySelector('.profile__add-button');
@@ -94,7 +95,7 @@ closeButtons.forEach(button => {
 });
 
 /*обработчик клика кнопки Редактировать*/
-profileEditButton.addEventListener('click', () => {    
+profileEditButton.addEventListener('click', () => {
     nameInput.value = nameDisplay.textContent;
     jobInput.value = jobDisplay.textContent;
 
@@ -116,8 +117,7 @@ newPlaceForm.addEventListener('submit', handleFormAddCardSubmit);
 /*метод заполнения контейнера карточек при загрузке страницы*/
 const addCards = () => {
     mestoApi.getCards() //дёрнули эндпоинт получения карточек
-    .then(data => {     //получили массив карточек
-        
+    .then(data => { //получили массив карточек     
         data.forEach(elem => cardsContainer.append( //собираем и отображаем карточки
             createCard({
                 template: template,
@@ -144,6 +144,16 @@ const addCards = () => {
     ));*/
 }
 
+const updateProfileInfo = () => {
+    mestoApi.getUser()
+    .then(user => {
+        nameInput.value = user.name;
+        jobInput.value = user.about;
+        profileAvatar.style.backgroundImage = `url('${user.avatar}')`;
+    })
+}
+
 addCards();
+updateProfileInfo();
 
 enableValidation(validationConfig);
