@@ -115,45 +115,33 @@ profileForm.addEventListener('submit', handleFormProfileSubmit);
 newPlaceForm.addEventListener('submit', handleFormAddCardSubmit);
 
 /*метод заполнения контейнера карточек при загрузке страницы*/
-const addCards = () => {
-    mestoApi.getCards() //дёрнули эндпоинт получения карточек
-    .then(data => { //получили массив карточек     
-        data.forEach(elem => cardsContainer.append( //собираем и отображаем карточки
-            createCard({
-                template: template,
-                cardImagePopUp: cardImagePopUp,
-                cardName: elem.name,
-                carLink: elem.link,
-                deleteCallback: removeCard,
-                likeCallback: onLikeCard,
-                imgPopUpCallback: onImgClick
-            })
-        ));
-    })
-    //старый метод заполнения карточек из константного массива
-    /*initialCards.forEach(elem => cardsContainer.append(
+const addCards = cards => { //получили массив карточек   
+    cards.forEach(card => cardsContainer.append( //собираем и отображаем карточки
         createCard({
             template: template,
             cardImagePopUp: cardImagePopUp,
-            cardName: elem.name,
-            carLink: elem.link,
+            cardName: card.name,
+            carLink: card.link,
             deleteCallback: removeCard,
             likeCallback: onLikeCard,
             imgPopUpCallback: onImgClick
         })
-    ));*/
+    ));
 }
 
-const updateProfileInfo = () => {
-    mestoApi.getUser()
-    .then(user => {
-        nameDisplay.textContent = user.name;
-        jobDisplay.textContent = user.about;
-        profileAvatar.style.backgroundImage = `url('${user.avatar}')`;
-    })
+const updateProfileInfo = user => {
+    nameDisplay.textContent = user.name;
+    jobDisplay.textContent = user.about;
+    profileAvatar.style.backgroundImage = `url('${user.avatar}')`;
 }
 
-addCards();
-updateProfileInfo();
+Promise.all([mestoApi.getUser(), mestoApi.getCards()]) //вызываем методы отрисовки карточек и профиля после получения всех данных с сервера
+.then(([user, cards]) => {    
+    updateProfileInfo(user);
+    addCards(cards);
+    
+}).catch(err => {
+    console.log('Ошибка: ', err);
+});
 
 enableValidation(validationConfig);
