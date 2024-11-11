@@ -5,7 +5,7 @@ const AUTH_GUID = '62c3797c-4bc2-4e71-b432-c76d38431338';
 const handleResponse = response => {
     return response.ok 
     ? response.json() 
-    : Promise.reject(`Ошибка: ${res.status}`);
+    : Promise.reject(`Ошибка: ${response.status}`);
 }
 
 //Универсальная функция запроса

@@ -58,11 +58,16 @@ const validationConfig = {
 const handleFormProfileSubmit = e => {
     e.preventDefault();    
     const win = e.submitter.closest('.popup');
+    const dataToSend = { 
+        name: nameInput.value,
+        about: jobInput.value
+    }
 
-    nameDisplay.textContent = nameInput.value;
-    jobDisplay.textContent = jobInput.value;
-
-    closeModalWindow(win);
+    mestoApi.updateProfile(dataToSend) //отсылаем отредактированные поля профиля
+    .then(newProfileData => {
+        nameDisplay.textContent = newProfileData.name;
+        jobDisplay.textContent = newProfileData.about;
+    }).finally(()=>closeModalWindow(win));    
 }
 
 /*метод добавления новой карточки - коллбэк для кнопки "Сохранить" на форме Создания*/
@@ -76,7 +81,6 @@ const handleFormAddCardSubmit = e => {
 
     mestoApi.createCard(dataToSend)//отсылаем поля для новой карточки
     .then(newCard => { //собираем новую карточку из возвращенного объекта
-        debugger;
         cardsContainer.prepend(
             createCard({
                 template: template,
