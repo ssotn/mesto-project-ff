@@ -147,8 +147,8 @@ const addCards = () => {
 const updateProfileInfo = () => {
     mestoApi.getUser()
     .then(user => {
-        nameInput.value = user.name;
-        jobInput.value = user.about;
+        nameDisplay.textContent = user.name;
+        jobDisplay.textContent = user.about;
         profileAvatar.style.backgroundImage = `url('${user.avatar}')`;
     })
 }
