@@ -1,9 +1,10 @@
 import './pages/index.css';
-import initialCards from './scripts/cards.js';
 import { openModalWindow, closeModalWindow } from './scripts/modal.js';
 import { createCard, removeCard, onLikeCard } from './scripts/card.js';
 import { enableValidation, clearValidation } from './scripts/validation.js';
 import { mestoApi } from './scripts/api.js';
+
+let USER_ID;
 
 /*шаблон карточки, контейнер карточек, ВСЕ "крестики закрытия" модальных окон, формы*/
 const template = document.querySelector('#card-template').content;
@@ -86,7 +87,10 @@ const handleFormAddCardSubmit = e => {
                 template: template,
                 cardImagePopUp: cardImagePopUp,
                 cardName: newCard.name,
-                carLink: newCard.link,
+                cardLink: newCard.link,
+                cardId: newCard._id,
+                ownerId: newCard.owner._id,
+                userId: USER_ID,
                 deleteCallback: removeCard,
                 likeCallback: onLikeCard,
                 imgPopUpCallback: onImgClick
@@ -131,7 +135,10 @@ const addCards = cards => { //получили массив карточек
             template: template,
             cardImagePopUp: cardImagePopUp,
             cardName: card.name,
-            carLink: card.link,
+            cardLink: card.link,
+            cardId: card._id,
+            ownerId: card.owner._id,
+            userId: USER_ID,
             deleteCallback: removeCard,
             likeCallback: onLikeCard,
             imgPopUpCallback: onImgClick
@@ -146,7 +153,9 @@ const updateProfileInfo = user => {
 }
 
 Promise.all([mestoApi.getUser(), mestoApi.getCards()]) //вызываем методы отрисовки карточек и профиля после получения всех данных с сервера
-.then(([user, cards]) => {    
+.then(([user, cards]) => {
+    USER_ID = user._id;
+
     updateProfileInfo(user);
     addCards(cards);    
 }).catch(err => {
