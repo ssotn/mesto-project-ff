@@ -69,21 +69,27 @@ const handleFormProfileSubmit = e => {
 const handleFormAddCardSubmit = e => {
     e.preventDefault();
     const win = e.submitter.closest('.popup');
+    const dataToSend = { //отсылаем поля для новой карточки
+        name: newCardName.value,
+        link: newCardUrl.value
+    }
 
-    cardsContainer.prepend(
-        createCard({
-            template: template,
-            cardImagePopUp: cardImagePopUp,
-            cardName: newCardName.value,
-            carLink: newCardUrl.value,
-            deleteCallback: removeCard,
-            likeCallback: onLikeCard,
-            imgPopUpCallback: onImgClick
-        })
-    );
-
-    newPlaceForm.reset();
-    closeModalWindow(win);
+    mestoApi.createCard(dataToSend)//отсылаем поля для новой карточки
+    .then(newCard => { //собираем новую карточку из возвращенного объекта
+        debugger;
+        cardsContainer.prepend(
+            createCard({
+                template: template,
+                cardImagePopUp: cardImagePopUp,
+                cardName: newCard.name,
+                carLink: newCard.link,
+                deleteCallback: removeCard,
+                likeCallback: onLikeCard,
+                imgPopUpCallback: onImgClick
+            })
+        );
+        newPlaceForm.reset();        
+    }).finally(() => closeModalWindow(win));    
 }
 
 /*пробежались по всем "крестикам закрытия" на странице и навесили на них слушатель*/
@@ -138,8 +144,7 @@ const updateProfileInfo = user => {
 Promise.all([mestoApi.getUser(), mestoApi.getCards()]) //вызываем методы отрисовки карточек и профиля после получения всех данных с сервера
 .then(([user, cards]) => {    
     updateProfileInfo(user);
-    addCards(cards);
-    
+    addCards(cards);    
 }).catch(err => {
     console.log('Ошибка: ', err);
 });

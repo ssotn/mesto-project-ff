@@ -11,6 +11,7 @@ const handleResponse = response => {
 //Универсальная функция запроса
 const baseRequest = (url, opts) => {
     const baseParams = {
+        ...opts,
         headers: {
             'Content-Type': 'application/json',
             authorization: AUTH_GUID
@@ -28,3 +29,12 @@ export const get = (uri) => {
     }).then(handleResponse);  
 }
 
+//универсальный POST
+export const post = (uri, data, method = "POST") => {
+    const url = BASE_URL + uri;
+
+    return baseRequest(url, {
+        method: method,
+        body: JSON.stringify(data)
+    }).then(handleResponse);  
+}
