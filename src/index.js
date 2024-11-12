@@ -91,6 +91,7 @@ const handleFormAddCardSubmit = e => {
                 cardId: newCard._id,
                 ownerId: newCard.owner._id,
                 userId: USER_ID,
+                cardLikes: newCard.likes,
                 deleteCallback: removeCard,
                 likeCallback: onLikeCard,
                 imgPopUpCallback: onImgClick
@@ -139,6 +140,7 @@ const addCards = cards => { //получили массив карточек
             cardId: card._id,
             ownerId: card.owner._id,
             userId: USER_ID,
+            cardLikes: card.likes,
             deleteCallback: removeCard,
             likeCallback: onLikeCard,
             imgPopUpCallback: onImgClick
@@ -155,7 +157,6 @@ const updateProfileInfo = user => {
 Promise.all([mestoApi.getUser(), mestoApi.getCards()]) //вызываем методы отрисовки карточек и профиля после получения всех данных с сервера
 .then(([user, cards]) => {
     USER_ID = user._id;
-
     updateProfileInfo(user);
     addCards(cards);    
 }).catch(err => {

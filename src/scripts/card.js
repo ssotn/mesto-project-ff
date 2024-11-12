@@ -9,20 +9,22 @@ import { mestoApi } from "./api";
  * @argument {*} link url картинки в карточке
  * @argument {*} cardId айдишник карточки
  * @argument {*} ownerId айдишник владельца карточки
- * @argument {*} ownerId айдишник пользователя
+ * @argument {*} userId айдишник пользователя
+ * @argument {*} cardLikes массив пользователей, поставивших лайки
  * @argument {*} deleteCallback метод удаления кароточки со страницы
  * @argument {*} likeCallback метод для действия поставить-убрать лайк
  * @argument {*} imgPopUpCallback метод открытия картинки карточки в модальном окне
  * @returns cardElement
  */
-
-function createCard({template, cardImagePopUp, cardName, cardLink, cardId, ownerId, userId, deleteCallback, likeCallback, imgPopUpCallback}) {
+function createCard({template, cardImagePopUp, cardName, cardLink, cardId, ownerId, userId, cardLikes = [], deleteCallback, likeCallback, imgPopUpCallback}) {
     const cardElement = template.querySelector('.places__item').cloneNode(true);
     const cardLikeButton = cardElement.querySelector('.card__like-button');
     const cardDeleteButton = cardElement.querySelector('.card__delete-button');
     const cardImg = cardElement.querySelector('.card__image');
+    const cardTitle = cardElement.querySelector('.card__title');
+    const likesCounter = cardElement.querySelector('.card__likes');
     
-    cardElement.querySelector('.card__title').textContent = cardName;
+    cardTitle.textContent = cardName;
     cardImg.src = cardLink;
     cardImg.alt = cardName;
     cardElement.dataset.cardId = cardId; //добавили айдишник нашей карточке
@@ -33,10 +35,23 @@ function createCard({template, cardImagePopUp, cardName, cardLink, cardId, owner
         cardDeleteButton.addEventListener('click', () => deleteCallback(cardElement));
     }
 
-    cardLikeButton.addEventListener('click', () => likeCallback(cardLikeButton));
+    likesCounter.textContent = cardLikes.length; //выставили кол-во лайков при создании карточки
+    if (cardLikes.some(user => user._id === userId)) { //если с сервака подгрузилась карточка с нашим лайком - выставим нужный стиль
+        like(cardLikeButton);
+    }
+
+    cardLikeButton.addEventListener('click', () => likeCallback(cardLikeButton, {cardId, likesCounter}));
     cardImg.addEventListener('click', () => imgPopUpCallback(cardName, cardLink, cardImagePopUp));
 
     return cardElement;
+}
+//метод обновления лайка в вёрстке. меняем картинку сердечка и выставляем кол-во лайков 
+const like = (cardLikeBtn, updateLikesCount = false, likesCounter, count) => {
+    cardLikeBtn.classList.toggle('card__like-button_is-active');
+    
+    if (updateLikesCount) {
+        likesCounter.textContent = count;
+    }
 }
 /**
  * метод удаления кароточки со страницы
@@ -48,10 +63,14 @@ function removeCard(card) {
 }
 /**
  * метод для действия поставить-убрать лайк
- * @param {*} cardLike 
+ * @param {*} cardLikeBtn //кнопка лайка
+ * @param {*} cardId //айдишник карточки
+ * @param {*} likesCounter //счётчик лайков
  */
-function onLikeCard(cardLike) {
-    cardLike.classList.toggle('card__like-button_is-active');
+function onLikeCard(cardLikeBtn, {cardId, likesCounter}) {
+    cardLikeBtn.classList.contains('card__like-button_is-active')
+    ? mestoApi.dislikeCard(cardId).then((card) => like(cardLikeBtn, true, likesCounter, card.likes.length)) // если да - убираем его
+    : mestoApi.likeCard(cardId).then((card) => like(cardLikeBtn, true, likesCounter, card.likes.length)); // иначе - ставим
 }
 
 export {createCard, removeCard, onLikeCard}

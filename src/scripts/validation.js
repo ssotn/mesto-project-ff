@@ -76,7 +76,6 @@ const hideInputError = (formElement, inputElement) => {
   errorElement.textContent = '';
 };
 
-
 export const enableValidation = validationConfig => {
   // Найдём все формы с указанным классом в DOM,
   // сделаем из них массив методом Array.from

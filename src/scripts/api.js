@@ -7,6 +7,8 @@ const initMestoAPI = () => ({
 
     createCard: (data) => post('cards', data), //добавить новую карточку
     deleteCard: (id) => post(`cards/${id}`, {}, 'DELETE'), //добавить новую карточку
+    likeCard: (id) => post(`cards/likes/${id}`, {}, 'PUT'), //поставить лайк карточке
+    dislikeCard: (id) => post(`cards/likes/${id}`, {}, 'DELETE'), //убрать свой лайк с карточки
 });
 
 export const mestoApi = initMestoAPI();
