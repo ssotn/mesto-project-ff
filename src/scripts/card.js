@@ -91,8 +91,16 @@ function removeCard(card, win) {
  */
 function onLikeCard(cardLikeBtn, {cardId, likesCounter}) {
     cardLikeBtn.classList.contains('card__like-button_is-active')
-    ? mestoApi.dislikeCard(cardId).then((card) => like(cardLikeBtn, true, likesCounter, card.likes.length)) // если да - убираем его
-    : mestoApi.likeCard(cardId).then((card) => like(cardLikeBtn, true, likesCounter, card.likes.length)); // иначе - ставим
+    ? mestoApi.dislikeCard(cardId)
+        .then((card) => like(cardLikeBtn, true, likesCounter, card.likes.length)) // если да - убираем его
+        .catch(err => {
+            console.log('Ошибка: ', err);
+        })
+    : mestoApi.likeCard(cardId)
+        .then((card) => like(cardLikeBtn, true, likesCounter, card.likes.length)) // иначе - ставим
+        .catch(err => {
+            console.log('Ошибка: ', err);
+        });
 }
 
 export {createCard, onRemoveCardClick, onLikeCard}

@@ -5,6 +5,14 @@ import { enableValidation, clearValidation } from './scripts/validation.js';
 import { mestoApi } from './scripts/api.js';
 
 let USER_ID;
+const validationConfig = {
+    formSelector: '.popup__form',
+    inputSelector: '.popup__input',
+    submitButtonSelector: '.popup__button',
+    inactiveButtonClass: 'popup__button_disabled',
+    inputErrorClass: 'popup__input_type_error',
+    errorClass: 'popup__error_visible',
+}
 
 /*шаблон карточки, контейнер карточек, ВСЕ "крестики закрытия" модальных окон, формы*/
 const template = document.querySelector('#card-template').content;
@@ -58,15 +66,6 @@ const onImgClick = (imgName, imgLink, cardPopUp) => {
  
     openModalWindow(cardPopUp);
 };
-
-const validationConfig = {
-    formSelector: '.popup__form',
-    inputSelector: '.popup__input',
-    submitButtonSelector: '.popup__button',
-    inactiveButtonClass: 'popup__button_disabled',
-    inputErrorClass: 'popup__input_type_error',
-    errorClass: 'popup__error_visible',
-}
 
 /*меняем текст кнопки "Сохранить" на "Сохранение..."*/
 const loading = {
