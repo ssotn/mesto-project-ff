@@ -31,7 +31,6 @@
   cursor: auto;
 }
 
-
 @media screen and (max-width: 568px) {
   .popup__button {
     font-size: 14px;

@@ -1,6 +1,6 @@
 # Проектная работа Mesto
 
-# 6й спринт
+# 7й спринт
 
 **Ссылка на** [**макет**](https://www.figma.com/file/bjyvbKKJN2naO0ucURl2Z0/JavaScript.-Sprint-5?node-id=0%3A1 "ссылка на макет")
 
