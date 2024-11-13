@@ -83,7 +83,11 @@ const handleFormAvatarSubmit = e => {
     mestoApi.updateAvatar(dataToSend) //отсылаем отредактированные поля профиля
     .then(newUserData => {
         profileAvatar.style.backgroundImage = `url('${newUserData.avatar}')`;
-    }).finally(()=>{
+    })
+    .catch(err => {
+        console.log('Ошибка: ', err);
+    })
+    .finally(()=>{
         loading.stop(e.submitter);
         closeModalWindow(win)
     });  
@@ -104,7 +108,11 @@ const handleFormProfileSubmit = e => {
     .then(newProfileData => {
         nameDisplay.textContent = newProfileData.name;
         jobDisplay.textContent = newProfileData.about;
-    }).finally(() => {
+    })
+    .catch(err => {
+        console.log('Ошибка: ', err);
+    })
+    .finally(()=>{
         loading.stop(e.submitter);
         closeModalWindow(win)
     });
@@ -138,7 +146,11 @@ const handleFormAddCardSubmit = e => {
             })
         );
         newPlaceForm.reset();        
-    }).finally(() => {
+    })
+    .catch(err => {
+        console.log('Ошибка: ', err);
+    })
+    .finally(() => {
         loading.stop(e.submitter);
         closeModalWindow(win)
     });    
@@ -180,7 +192,7 @@ profileForm.addEventListener('submit', handleFormProfileSubmit);
 newPlaceForm.addEventListener('submit', handleFormAddCardSubmit);
 avatarForm.addEventListener('submit', handleFormAvatarSubmit);
 
-/*метод заполнения контейнера карточек при загрузке страницы*/
+/*метод заполнения в вёрске контейнера карточек при загрузке страницы*/
 const addCards = cards => { //получили массив карточек   
     cards.forEach(card => cardsContainer.append( //собираем и отображаем карточки
         createCard({
