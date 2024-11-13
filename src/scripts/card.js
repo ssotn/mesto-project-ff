@@ -45,7 +45,8 @@ function createCard({template, cardImagePopUp, cardName, cardLink, cardId, owner
 
     return cardElement;
 }
-//метод обновления лайка в вёрстке. меняем картинку сердечка и выставляем кол-во лайков 
+
+/*метод обновления лайка в вёрстке. меняем картинку сердечка и выставляем кол-во лайков*/
 const like = (cardLikeBtn, updateLikesCount = false, likesCounter, count) => {
     cardLikeBtn.classList.toggle('card__like-button_is-active');
     
@@ -53,6 +54,7 @@ const like = (cardLikeBtn, updateLikesCount = false, likesCounter, count) => {
         likesCounter.textContent = count;
     }
 }
+
 /**
  * метод удаления кароточки со страницы
  * @param {*} card 
@@ -61,6 +63,7 @@ function removeCard(card) {
     mestoApi.deleteCard(card.dataset.cardId)//удаялем карточку с сервера по айдишнику
     .then(() => card.remove())//удаляем из разметки
 }
+
 /**
  * метод для действия поставить-убрать лайк
  * @param {*} cardLikeBtn //кнопка лайка
