@@ -30,7 +30,7 @@ const profileAddButton = document.querySelector('.profile__add-button');
 
 /*окно редактирования автара и поля url*/
 const editAvatarWindow = document.querySelector('.popup_type_avatar-edit');
-const newAvatarUrl = editAvatarWindow.querySelector('.popup__input_type-url');
+const newAvatarUrl = editAvatarWindow.querySelector('.popup__input_type_avatar-url');
 
 /*окно редактирования профиля и поля*/
 const editProfileWindow = document.querySelector('.popup_type_edit');
@@ -68,6 +68,15 @@ const validationConfig = {
 /*метод отправки  - коллбэк для кнопки "Сохранить" на форме Редактирования аватара*/
 const handleFormAvatarSubmit = e => {
     e.preventDefault();
+    const win = e.submitter.closest('.popup');    
+    const dataToSend = { 
+        avatar: newAvatarUrl.value,
+    }
+
+    mestoApi.updateAvatar(dataToSend) //отсылаем отредактированные поля профиля
+    .then(newUserData => {
+        profileAvatar.style.backgroundImage = `url('${newUserData.avatar}')`;
+    }).finally(()=>closeModalWindow(win));  
   
 }
 
