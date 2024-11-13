@@ -4,7 +4,11 @@
  */
 export function openModalWindow(win) {
     document.addEventListener('keydown', onEscPress);
-    document.addEventListener('click', onOverlayClick);
+    /** ниже вешаем слушатель на "mousedown" вместо "click" - т.к. если пользователь с помощью мышки 
+     * выделит текст внутри формы, например чтобы стереть, при этом выведет курсор за границы формы и отпустит клавишу, 
+     * то событие клика сработает вне попапа и модальное окно закроется 
+     **/
+    document.addEventListener('mousedown', onOverlayClick); 
     win.classList.add('popup_is-animated');
     setTimeout(() => win.classList.add('popup_is-opened'), 1);
 }
@@ -14,7 +18,7 @@ export function openModalWindow(win) {
  */
 export function closeModalWindow(win) {
     document.removeEventListener('keydown', onEscPress);
-    document.removeEventListener('click', onOverlayClick);
+    document.removeEventListener('mousedown', onOverlayClick);
     win.classList.remove('popup_is-opened');
 }
 /**
