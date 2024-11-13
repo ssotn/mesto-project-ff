@@ -1,6 +1,6 @@
 import './pages/index.css';
 import { openModalWindow, closeModalWindow } from './scripts/modal.js';
-import { createCard, removeCard, onLikeCard } from './scripts/card.js';
+import { createCard, onRemoveCardClick, onLikeCard } from './scripts/card.js';
 import { enableValidation, clearValidation } from './scripts/validation.js';
 import { mestoApi } from './scripts/api.js';
 
@@ -28,16 +28,16 @@ const profileEditButton = document.querySelector('.profile__edit-button');
 /*кнопка добавления новой карточки*/
 const profileAddButton = document.querySelector('.profile__add-button');
 
-/*окно редактирования автара и поля url*/
+/*модальное окно редактирования автара и поля url*/
 const editAvatarWindow = document.querySelector('.popup_type_avatar-edit');
 const newAvatarUrl = editAvatarWindow.querySelector('.popup__input_type_avatar-url');
 
-/*окно редактирования профиля и поля*/
+/*модальное окно редактирования профиля и поля*/
 const editProfileWindow = document.querySelector('.popup_type_edit');
 const nameInput = editProfileWindow.querySelector('.popup__input_type_name');
 const jobInput = editProfileWindow.querySelector('.popup__input_type_description');
 
-/*окно добавления новой карточки и поля*/
+/*модальное окно добавления новой карточки и поля*/
 const newCardWindow = document.querySelector('.popup_type_new-card');
 const newCardName = newCardWindow.querySelector('.popup__input_type_card-name');
 const newCardUrl = newCardWindow.querySelector('.popup__input_type_url');
@@ -46,6 +46,9 @@ const newCardUrl = newCardWindow.querySelector('.popup__input_type_url');
 const cardImagePopUp = document.querySelector('.popup_type_image');
 const cardImagePopUpCaption = cardImagePopUp.querySelector('.popup__caption');
 const cardImagePopUpImage = cardImagePopUp.querySelector('.popup__image');
+
+/*модальное окно - подтверждение на удаление карточки*/
+const cardConfirmationPopUp = document.querySelector('.popup_type_confirmation');
 
 /*метод для открытия картинки карточки в модальном окне - передаём как коллбэк в createCard*/
 const onImgClick = (imgName, imgLink, cardPopUp) => {
@@ -71,7 +74,7 @@ const loading = {
     stop: btn => btn.textContent = "Сохранить"
 }
 
-/*метод отправки  - коллбэк для кнопки "Сохранить" на форме Редактирования аватара*/
+/*метод отправки - коллбэк для кнопки "Сохранить" на форме Редактирования аватара*/
 const handleFormAvatarSubmit = e => {
     loading.start(e.submitter);
     e.preventDefault();
@@ -87,11 +90,10 @@ const handleFormAvatarSubmit = e => {
     .catch(err => {
         console.log('Ошибка: ', err);
     })
-    .finally(()=>{
+    .finally(()=> {
         loading.stop(e.submitter);
         closeModalWindow(win)
     });  
-  
 }
 
 /*метод отправки  - коллбэк для кнопки "Сохранить" на форме Редактирования профиля*/
@@ -140,7 +142,8 @@ const handleFormAddCardSubmit = e => {
                 ownerId: newCard.owner._id,
                 userId: USER_ID,
                 cardLikes: newCard.likes,
-                deleteCallback: removeCard,
+                cardConfirmationPopUp: cardConfirmationPopUp,
+                deleteCallback: onRemoveCardClick,
                 likeCallback: onLikeCard,
                 imgPopUpCallback: onImgClick
             })
@@ -204,7 +207,8 @@ const addCards = cards => { //получили массив карточек
             ownerId: card.owner._id,
             userId: USER_ID,
             cardLikes: card.likes,
-            deleteCallback: removeCard,
+            cardConfirmationPopUp: cardConfirmationPopUp,
+            deleteCallback: onRemoveCardClick,
             likeCallback: onLikeCard,
             imgPopUpCallback: onImgClick
         })

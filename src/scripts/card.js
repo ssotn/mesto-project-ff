@@ -1,4 +1,5 @@
 import { mestoApi } from "./api";
+import { openModalWindow, closeModalWindow } from './modal.js';
 
 /**
  * метод создания карточки
@@ -16,7 +17,8 @@ import { mestoApi } from "./api";
  * @argument {*} imgPopUpCallback метод открытия картинки карточки в модальном окне
  * @returns cardElement
  */
-function createCard({template, cardImagePopUp, cardName, cardLink, cardId, ownerId, userId, cardLikes = [], deleteCallback, likeCallback, imgPopUpCallback}) {
+function createCard({template, cardImagePopUp, cardName, cardLink, cardId, ownerId, userId, cardLikes = [], cardConfirmationPopUp,
+     deleteCallback, likeCallback, imgPopUpCallback}) {
     const cardElement = template.querySelector('.places__item').cloneNode(true);
     const cardLikeButton = cardElement.querySelector('.card__like-button');
     const cardDeleteButton = cardElement.querySelector('.card__delete-button');
@@ -32,7 +34,8 @@ function createCard({template, cardImagePopUp, cardName, cardLink, cardId, owner
     if (ownerId !== userId){ //оставляем кнопку удаления только у своих карточек
         cardDeleteButton.remove();
     } else {        
-        cardDeleteButton.addEventListener('click', () => deleteCallback(cardElement));
+        //cardDeleteButton.addEventListener('click', () => deleteCallback(cardElement));
+        cardDeleteButton.addEventListener('click', () => deleteCallback(cardConfirmationPopUp, cardElement));
     }
 
     likesCounter.textContent = cardLikes.length; //выставили кол-во лайков при создании карточки
@@ -47,7 +50,7 @@ function createCard({template, cardImagePopUp, cardName, cardLink, cardId, owner
 }
 
 /*метод обновления лайка в вёрстке. меняем картинку сердечка и выставляем кол-во лайков*/
-const like = (cardLikeBtn, updateLikesCount = false, likesCounter, count) => {
+function like(cardLikeBtn, updateLikesCount = false, likesCounter, count) {
     cardLikeBtn.classList.toggle('card__like-button_is-active');
     
     if (updateLikesCount) {
@@ -55,13 +58,29 @@ const like = (cardLikeBtn, updateLikesCount = false, likesCounter, count) => {
     }
 }
 
+/*модальное окно - подтверждение на удаление карточки*/
+function onRemoveCardClick(cardConfirmationPopUp, card) {
+    const cardElement = card; //прокидываем константой дальше - иначе теряется dataset
+    const cardConfirmationBtn = cardConfirmationPopUp.querySelector('.popup__button');
+    
+    cardConfirmationBtn.addEventListener('click', () => removeCard(cardElement, cardConfirmationPopUp));
+    openModalWindow(cardConfirmationPopUp);
+};
+
 /**
- * метод удаления кароточки со страницы
- * @param {*} card 
+ * новый метод удаления карточки со страницы - с окном подтверждения
+ * @param {*} card
+ * @param {*} win
  */
-function removeCard(card) {
+function removeCard(card, win) {    
     mestoApi.deleteCard(card.dataset.cardId)//удаялем карточку с сервера по айдишнику
     .then(() => card.remove())//удаляем из разметки
+    .catch(err => {
+        console.log('Ошибка: ', err);
+    })
+    .finally(() => {
+        closeModalWindow(win)
+    });
 }
 
 /**
@@ -76,4 +95,4 @@ function onLikeCard(cardLikeBtn, {cardId, likesCounter}) {
     : mestoApi.likeCard(cardId).then((card) => like(cardLikeBtn, true, likesCounter, card.likes.length)); // иначе - ставим
 }
 
-export {createCard, removeCard, onLikeCard}
+export {createCard, onRemoveCardClick, onLikeCard}
