@@ -12,6 +12,7 @@ import { openModalWindow, closeModalWindow } from './modal.js';
  * @argument {*} ownerId айдишник владельца карточки
  * @argument {*} userId айдишник пользователя
  * @argument {*} cardLikes массив пользователей, поставивших лайки
+ * @argument {*} cardConfirmationPopUp окно подтверждения для удаления карточки
  * @argument {*} deleteCallback метод удаления кароточки со страницы
  * @argument {*} likeCallback метод для действия поставить-убрать лайк
  * @argument {*} imgPopUpCallback метод открытия картинки карточки в модальном окне
@@ -34,7 +35,6 @@ function createCard({template, cardImagePopUp, cardName, cardLink, cardId, owner
     if (ownerId !== userId){ //оставляем кнопку удаления только у своих карточек
         cardDeleteButton.remove();
     } else {        
-        //cardDeleteButton.addEventListener('click', () => deleteCallback(cardElement));
         cardDeleteButton.addEventListener('click', () => deleteCallback(cardConfirmationPopUp, cardElement));
     }
 
