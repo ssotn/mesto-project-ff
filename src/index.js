@@ -10,17 +10,27 @@ let USER_ID;
 const template = document.querySelector('#card-template').content;
 const cardsContainer = document.querySelector('.places__list');
 const closeButtons = document.querySelectorAll('.popup__close');
-const profileForm = document.forms['edit-profile']
+const profileForm = document.forms['edit-profile'];
 const newPlaceForm = document.forms['new-place'];
+const avatarForm = document.forms['edit-avatar'];
 
-/*кнопка редактирования профиля на странице*/
-const profileEditButton = document.querySelector('.profile__edit-button');
+/*элементы на странице - имя, деятельность, аватарка*/
 const nameDisplay = document.querySelector(".profile__title");
 const jobDisplay = document.querySelector(".profile__description");
 const profileAvatar = document.querySelector(".profile__image");
 
+/*кнопка редактирования аватара*/
+const editAvatarButton = document.querySelector('.profile__image');
+
+/*кнопка редактирования профиля на странице*/
+const profileEditButton = document.querySelector('.profile__edit-button');
+
 /*кнопка добавления новой карточки*/
 const profileAddButton = document.querySelector('.profile__add-button');
+
+/*окно редактирования автара и поля url*/
+const editAvatarWindow = document.querySelector('.popup_type_avatar-edit');
+const newAvatarUrl = editAvatarWindow.querySelector('.popup__input_type-url');
 
 /*окно редактирования профиля и поля*/
 const editProfileWindow = document.querySelector('.popup_type_edit');
@@ -55,11 +65,17 @@ const validationConfig = {
     errorClass: 'popup__error_visible',
 }
 
+/*метод отправки  - коллбэк для кнопки "Сохранить" на форме Редактирования аватара*/
+const handleFormAvatarSubmit = e => {
+    e.preventDefault();
+  
+}
+
 /*метод отправки  - коллбэк для кнопки "Сохранить" на форме Редактирования профиля*/
 const handleFormProfileSubmit = e => {
-    e.preventDefault();    
+    e.preventDefault();
     const win = e.submitter.closest('.popup');
-    const dataToSend = { 
+    const dataToSend = {
         name: nameInput.value,
         about: jobInput.value
     }
@@ -68,7 +84,7 @@ const handleFormProfileSubmit = e => {
     .then(newProfileData => {
         nameDisplay.textContent = newProfileData.name;
         jobDisplay.textContent = newProfileData.about;
-    }).finally(()=>closeModalWindow(win));    
+    }).finally(()=>closeModalWindow(win));
 }
 
 /*метод добавления новой карточки - коллбэк для кнопки "Сохранить" на форме Создания*/
@@ -109,6 +125,14 @@ closeButtons.forEach(button => {
     button.addEventListener('click', () => closeModalWindow(win));
 });
 
+/*обработчик клика на Аватар*/
+editAvatarButton.addEventListener('click', () => {
+    
+    openModalWindow(editAvatarWindow);
+    avatarForm.reset();
+    clearValidation(editAvatarWindow, validationConfig);
+});
+
 /*обработчик клика кнопки Редактировать*/
 profileEditButton.addEventListener('click', () => {
     nameInput.value = nameDisplay.textContent;
@@ -128,6 +152,7 @@ profileAddButton.addEventListener('click', () => {
 /*листенеры на submit форм*/
 profileForm.addEventListener('submit', handleFormProfileSubmit);
 newPlaceForm.addEventListener('submit', handleFormAddCardSubmit);
+avatarForm.addEventListener('submit', handleFormAvatarSubmit);
 
 /*метод заполнения контейнера карточек при загрузке страницы*/
 const addCards = cards => { //получили массив карточек   
