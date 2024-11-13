@@ -65,8 +65,15 @@ const validationConfig = {
     errorClass: 'popup__error_visible',
 }
 
+/*меняем текст кнопки "Сохранить" на "Сохранение..."*/
+const loading = {
+    start: btn => btn.textContent = "Сохранение...",
+    stop: btn => btn.textContent = "Сохранить"
+}
+
 /*метод отправки  - коллбэк для кнопки "Сохранить" на форме Редактирования аватара*/
 const handleFormAvatarSubmit = e => {
+    loading.start(e.submitter);
     e.preventDefault();
     const win = e.submitter.closest('.popup');    
     const dataToSend = { 
@@ -76,12 +83,16 @@ const handleFormAvatarSubmit = e => {
     mestoApi.updateAvatar(dataToSend) //отсылаем отредактированные поля профиля
     .then(newUserData => {
         profileAvatar.style.backgroundImage = `url('${newUserData.avatar}')`;
-    }).finally(()=>closeModalWindow(win));  
+    }).finally(()=>{
+        loading.stop(e.submitter);
+        closeModalWindow(win)
+    });  
   
 }
 
 /*метод отправки  - коллбэк для кнопки "Сохранить" на форме Редактирования профиля*/
 const handleFormProfileSubmit = e => {
+    loading.start(e.submitter);
     e.preventDefault();
     const win = e.submitter.closest('.popup');
     const dataToSend = {
@@ -93,11 +104,15 @@ const handleFormProfileSubmit = e => {
     .then(newProfileData => {
         nameDisplay.textContent = newProfileData.name;
         jobDisplay.textContent = newProfileData.about;
-    }).finally(()=>closeModalWindow(win));
+    }).finally(() => {
+        loading.stop(e.submitter);
+        closeModalWindow(win)
+    });
 }
 
 /*метод добавления новой карточки - коллбэк для кнопки "Сохранить" на форме Создания*/
 const handleFormAddCardSubmit = e => {
+    loading.start(e.submitter);
     e.preventDefault();
     const win = e.submitter.closest('.popup');
     const dataToSend = { //отсылаем поля для новой карточки
@@ -123,7 +138,10 @@ const handleFormAddCardSubmit = e => {
             })
         );
         newPlaceForm.reset();        
-    }).finally(() => closeModalWindow(win));    
+    }).finally(() => {
+        loading.stop(e.submitter);
+        closeModalWindow(win)
+    });    
 }
 
 /*пробежались по всем "крестикам закрытия" на странице и навесили на них слушатель*/
@@ -135,8 +153,7 @@ closeButtons.forEach(button => {
 });
 
 /*обработчик клика на Аватар*/
-editAvatarButton.addEventListener('click', () => {
-    
+editAvatarButton.addEventListener('click', () => {    
     openModalWindow(editAvatarWindow);
     avatarForm.reset();
     clearValidation(editAvatarWindow, validationConfig);
@@ -182,6 +199,7 @@ const addCards = cards => { //получили массив карточек
     ));
 }
 
+/*метод обновления элементов в вёрстке после инициализации страницы и загрузки данных с сервера*/
 const updateProfileInfo = user => {
     nameDisplay.textContent = user.name;
     jobDisplay.textContent = user.about;
