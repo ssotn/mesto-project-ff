@@ -210,7 +210,7 @@ const handleFormAddCardSubmit = e => {
                 cardLikes: newCard.likes,
                 cardConfirmationPopUp: cardConfirmationPopUp,
                 deleteCallback: onRemoveCard,
-                likeCallback: onLikeCard,
+                likeCallback: onLikeCard(mestoApi), //вызываем метод прокидывая mestoApi в card.js/ либо, еще вариант - прокидывать mestoApi еще одним параметром в createCard
                 imgPopUpCallback: onImgClick
             })
         );
@@ -239,7 +239,7 @@ const addCards = cards => { //получили массив карточек
             cardLikes: card.likes,
             cardConfirmationPopUp: cardConfirmationPopUp,
             deleteCallback: onRemoveCard,
-            likeCallback: onLikeCard,
+            likeCallback: onLikeCard(mestoApi),
             imgPopUpCallback: onImgClick
         })
     ));

@@ -1,4 +1,4 @@
-import { mestoApi } from "./api";
+//import { mestoApi } from '/api.js'; -> не нужно, если прокидываем mestoApi аргуменотом в 
 
 /**
  * метод создания карточки
@@ -62,7 +62,7 @@ function like(cardLikeBtn, updateLikesCount = false, likesCounter, count) {
  * @param {*} cardId //айдишник карточки
  * @param {*} likesCounter //счётчик лайков
  */
-function onLikeCard(cardLikeBtn, {cardId, likesCounter}) {
+const onLikeCard = (mestoApi) => (cardLikeBtn, {cardId, likesCounter}) => { //каррирование - для получения mestoApi
     cardLikeBtn.classList.contains('card__like-button_is-active') //проверяем, есть ли у элемента кнопки класс
     ? mestoApi.dislikeCard(cardId)
         .then((card) => like(cardLikeBtn, true, likesCounter, card.likes.length)) // если да - убираем его
@@ -77,12 +77,3 @@ function onLikeCard(cardLikeBtn, {cardId, likesCounter}) {
 }
 
 export {createCard, onLikeCard}
-
-/** 1. попробовал codeium - пока не смог оценить. Плагин подчищает лишнее, комментарии и описание параметров пишет менее очевидные.
- * Оставлю как есть, может еще почитаю, как верно писать JSDOC.
- * 
- * 2. Спасибо за коммент со связанностью модулей. выпилил modal.js из card.js. Но изначально отказался от такой реализации,
- * т.к. в предыдущем спринте явно указывалось, что нужно метод удаления реализовывать в card.js. Сейчас его не осталось - только callback
- * 
- * 3. нужно ли таким же образом выпиливать отсюда onLikeCard и избавляться от связанности с "./api"?
- * **/
