@@ -1,5 +1,4 @@
 import { mestoApi } from "./api";
-import { openModalWindow, closeModalWindow } from './modal.js';
 
 /**
  * метод создания карточки
@@ -12,13 +11,12 @@ import { openModalWindow, closeModalWindow } from './modal.js';
  * @argument {*} ownerId айдишник владельца карточки
  * @argument {*} userId айдишник пользователя
  * @argument {*} cardLikes массив пользователей, поставивших лайки
- * @argument {*} cardConfirmationPopUp окно подтверждения для удаления карточки
  * @argument {*} deleteCallback метод удаления кароточки со страницы
  * @argument {*} likeCallback метод для действия поставить-убрать лайк
  * @argument {*} imgPopUpCallback метод открытия картинки карточки в модальном окне
  * @returns cardElement
  */
-function createCard({template, cardImagePopUp, cardName, cardLink, cardId, ownerId, userId, cardLikes = [], cardConfirmationPopUp,
+function createCard({template, cardImagePopUp, cardName, cardLink, cardId, ownerId, userId, cardLikes = [], 
      deleteCallback, likeCallback, imgPopUpCallback}) {
     const cardElement = template.querySelector('.places__item').cloneNode(true);
     const cardLikeButton = cardElement.querySelector('.card__like-button');
@@ -35,7 +33,7 @@ function createCard({template, cardImagePopUp, cardName, cardLink, cardId, owner
     if (ownerId !== userId){ //оставляем кнопку удаления только у своих карточек
         cardDeleteButton.remove();
     } else {        
-        cardDeleteButton.addEventListener('click', () => deleteCallback(cardConfirmationPopUp, cardElement));
+        cardDeleteButton.addEventListener('click', () => deleteCallback(cardElement));
     }
 
     likesCounter.textContent = cardLikes.length; //выставили кол-во лайков при создании карточки
@@ -58,31 +56,6 @@ function like(cardLikeBtn, updateLikesCount = false, likesCounter, count) {
     }
 }
 
-/*модальное окно - подтверждение на удаление карточки*/
-function onRemoveCardClick(cardConfirmationPopUp, card) {
-    const cardElement = card; //прокидываем константой дальше - иначе теряется dataset
-    const cardConfirmationBtn = cardConfirmationPopUp.querySelector('.popup__button');
-    
-    cardConfirmationBtn.addEventListener('click', () => removeCard(cardElement, cardConfirmationPopUp));
-    openModalWindow(cardConfirmationPopUp);
-};
-
-/**
- * новый метод удаления карточки со страницы - с окном подтверждения
- * @param {*} card
- * @param {*} win
- */
-function removeCard(card, win) {    
-    mestoApi.deleteCard(card.dataset.cardId)//удаялем карточку с сервера по айдишнику
-    .then(() => card.remove())//удаляем из разметки
-    .catch(err => {
-        console.log('Ошибка: ', err);
-    })
-    .finally(() => {
-        closeModalWindow(win)
-    });
-}
-
 /**
  * метод для действия поставить-убрать лайк
  * @param {*} cardLikeBtn //кнопка лайка
@@ -90,7 +63,7 @@ function removeCard(card, win) {
  * @param {*} likesCounter //счётчик лайков
  */
 function onLikeCard(cardLikeBtn, {cardId, likesCounter}) {
-    cardLikeBtn.classList.contains('card__like-button_is-active')
+    cardLikeBtn.classList.contains('card__like-button_is-active') //проверяем, есть ли у элемента кнопки класс
     ? mestoApi.dislikeCard(cardId)
         .then((card) => like(cardLikeBtn, true, likesCounter, card.likes.length)) // если да - убираем его
         .catch(err => {
@@ -103,4 +76,4 @@ function onLikeCard(cardLikeBtn, {cardId, likesCounter}) {
         });
 }
 
-export {createCard, onRemoveCardClick, onLikeCard}
+export {createCard, onLikeCard}

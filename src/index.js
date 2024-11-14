@@ -1,10 +1,13 @@
 import './pages/index.css';
 import { openModalWindow, closeModalWindow } from './scripts/modal.js';
-import { createCard, onRemoveCardClick, onLikeCard } from './scripts/card.js';
+import { createCard, onLikeCard } from './scripts/card.js';
 import { enableValidation, clearValidation } from './scripts/validation.js';
 import { mestoApi } from './scripts/api.js';
 
 let USER_ID;
+let cardToDelete, cardIdToDelete; //в глобальные переменные пишем нужные параметры для удаления карточки. получаем их в коллбэке в createCard
+
+/*конфиг для валидирования форм*/
 const validationConfig = {
     formSelector: '.popup__form',
     inputSelector: '.popup__input',
@@ -12,6 +15,12 @@ const validationConfig = {
     inactiveButtonClass: 'popup__button_disabled',
     inputErrorClass: 'popup__input_type_error',
     errorClass: 'popup__error_visible',
+}
+
+/*меняем текст кнопки "Сохранить" на "Сохранение..."*/
+const loading = {
+    start: btn => btn.textContent = "Сохранение...",
+    stop: btn => btn.textContent = "Сохранить"
 }
 
 /*шаблон карточки, контейнер карточек, ВСЕ "крестики закрытия" модальных окон, формы*/
@@ -55,22 +64,80 @@ const cardImagePopUp = document.querySelector('.popup_type_image');
 const cardImagePopUpCaption = cardImagePopUp.querySelector('.popup__caption');
 const cardImagePopUpImage = cardImagePopUp.querySelector('.popup__image');
 
-/*модальное окно - подтверждение на удаление карточки*/
+/*модальное окно - подтверждение на удаление карточки и кнопка подтверждения*/
 const cardConfirmationPopUp = document.querySelector('.popup_type_confirmation');
+const cardConfirmationBtn = cardConfirmationPopUp.querySelector('.popup__button');
+
+/*вешаем слушатели событий только после того, как HTML документ будет полностью загружен и разобран*/
+document.addEventListener('DOMContentLoaded', () => {
+    /*листенеры на submit форм и кнопки подтверждения удаления карточки*/
+    profileForm.addEventListener('submit', handleFormProfileSubmit);
+    newPlaceForm.addEventListener('submit', handleFormAddCardSubmit);
+    avatarForm.addEventListener('submit', handleFormAvatarSubmit);
+    cardConfirmationBtn.addEventListener('click', handleCardDeleteSubmit);
+
+    /*пробежались по всем "крестикам закрытия" на странице и навесили на них слушатель*/
+    closeButtons.forEach(button => {        
+        const win = button.closest('.popup');// находим 1 раз ближайший к крестику попап         
+        button.addEventListener('click', () => closeModalWindow(win));// устанавливаем обработчик закрытия на крестик
+    });
+
+    /*обработчик клика на Аватар*/
+    editAvatarButton.addEventListener('click', () => { 
+        openModalWindow(editAvatarWindow);
+        avatarForm.reset();
+        clearValidation(editAvatarWindow, validationConfig);
+    });
+
+    /*обработчик клика кнопки Редактировать*/
+    profileEditButton.addEventListener('click', () => {
+        nameInput.value = nameDisplay.textContent;
+        jobInput.value = jobDisplay.textContent;
+
+        openModalWindow(editProfileWindow);
+        clearValidation(editProfileWindow, validationConfig);
+    });
+
+    /*обработчик клика кнопки Создать*/
+    profileAddButton.addEventListener('click', () => {
+        openModalWindow(newCardWindow);
+        newPlaceForm.reset();
+        clearValidation(newCardWindow, validationConfig);
+    });
+});
 
 /*метод для открытия картинки карточки в модальном окне - передаём как коллбэк в createCard*/
-const onImgClick = (imgName, imgLink, cardPopUp) => {
+const onImgClick = (...args) => {
+    const [imgName, imgLink, cardPopUp] = args;
+    
     cardImagePopUpImage.src = imgLink;
     cardImagePopUpImage.alt = imgName;
     cardImagePopUpCaption.textContent = imgName;
- 
     openModalWindow(cardPopUp);
 };
 
-/*меняем текст кнопки "Сохранить" на "Сохранение..."*/
-const loading = {
-    start: btn => btn.textContent = "Сохранение...",
-    stop: btn => btn.textContent = "Сохранить"
+/*метод открытия модального окна для подтверждения удаления - передаём как коллбэк в createCard*/
+const onRemoveCard = (...args) => {
+    const [ cardElement ] = args; 
+    const { cardId } = cardElement.dataset;
+
+    cardToDelete = cardElement;
+    cardIdToDelete = cardId;
+    openModalWindow(cardConfirmationPopUp);
+}
+
+/*метод удаления карточки - коллбэк для кнопки "Да" в диалоговом окне подтверждения удаления*/
+const handleCardDeleteSubmit = e => {    
+    const win = e.target.closest('.popup'); 
+
+    mestoApi.deleteCard(cardIdToDelete)//удаляем карточку с сервера по айдишнику
+    .then(() => cardToDelete.remove())//удаляем из разметки
+    .catch(err => {
+        console.log('Ошибка: ', err);
+    })
+    .finally(() => {
+        closeModalWindow(win)
+    });
 }
 
 /*метод отправки - коллбэк для кнопки "Сохранить" на форме Редактирования аватара*/
@@ -142,7 +209,7 @@ const handleFormAddCardSubmit = e => {
                 userId: USER_ID,
                 cardLikes: newCard.likes,
                 cardConfirmationPopUp: cardConfirmationPopUp,
-                deleteCallback: onRemoveCardClick,
+                deleteCallback: onRemoveCard,
                 likeCallback: onLikeCard,
                 imgPopUpCallback: onImgClick
             })
@@ -158,42 +225,6 @@ const handleFormAddCardSubmit = e => {
     });    
 }
 
-/*пробежались по всем "крестикам закрытия" на странице и навесили на них слушатель*/
-closeButtons.forEach(button => {
-    // находим 1 раз ближайший к крестику попап 
-    const win = button.closest('.popup');
-    // устанавливаем обработчик закрытия на крестик
-    button.addEventListener('click', () => closeModalWindow(win));
-});
-
-/*обработчик клика на Аватар*/
-editAvatarButton.addEventListener('click', () => {    
-    openModalWindow(editAvatarWindow);
-    avatarForm.reset();
-    clearValidation(editAvatarWindow, validationConfig);
-});
-
-/*обработчик клика кнопки Редактировать*/
-profileEditButton.addEventListener('click', () => {
-    nameInput.value = nameDisplay.textContent;
-    jobInput.value = jobDisplay.textContent;
-
-    openModalWindow(editProfileWindow);
-    clearValidation(editProfileWindow, validationConfig);
-});
-
-/*обработчик клика кнопки Создать*/
-profileAddButton.addEventListener('click', () => {
-    openModalWindow(newCardWindow);
-    newPlaceForm.reset();
-    clearValidation(newCardWindow, validationConfig);
-});
-
-/*листенеры на submit форм*/
-profileForm.addEventListener('submit', handleFormProfileSubmit);
-newPlaceForm.addEventListener('submit', handleFormAddCardSubmit);
-avatarForm.addEventListener('submit', handleFormAvatarSubmit);
-
 /*метод заполнения в вёрске контейнера карточек при загрузке страницы*/
 const addCards = cards => { //получили массив карточек   
     cards.forEach(card => cardsContainer.append( //собираем и отображаем карточки
@@ -207,7 +238,7 @@ const addCards = cards => { //получили массив карточек
             userId: USER_ID,
             cardLikes: card.likes,
             cardConfirmationPopUp: cardConfirmationPopUp,
-            deleteCallback: onRemoveCardClick,
+            deleteCallback: onRemoveCard,
             likeCallback: onLikeCard,
             imgPopUpCallback: onImgClick
         })
@@ -221,7 +252,8 @@ const updateProfileInfo = user => {
     profileAvatar.style.backgroundImage = `url('${user.avatar}')`;
 }
 
-Promise.all([mestoApi.getUser(), mestoApi.getCards()]) //вызываем методы отрисовки карточек и профиля после получения всех данных с сервера
+/*вызываем методы отрисовки карточек и профиля после получения всех данных с сервера*/
+Promise.all([mestoApi.getUser(), mestoApi.getCards()]) 
 .then(([user, cards]) => {
     USER_ID = user._id;
     updateProfileInfo(user);
