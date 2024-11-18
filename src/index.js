@@ -86,7 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
     editAvatarButton.addEventListener('click', () => { 
         openModalWindow(editAvatarWindow);
         avatarForm.reset();
-        clearValidation(editAvatarWindow, validationConfig);
+        clearValidation(avatarForm, validationConfig);
     });
 
     /*обработчик клика кнопки Редактировать*/
@@ -95,14 +95,14 @@ document.addEventListener('DOMContentLoaded', () => {
         jobInput.value = jobDisplay.textContent;
 
         openModalWindow(editProfileWindow);
-        clearValidation(editProfileWindow, validationConfig);
+        clearValidation(profileForm, validationConfig);
     });
 
     /*обработчик клика кнопки Создать*/
     profileAddButton.addEventListener('click', () => {
         openModalWindow(newCardWindow);
         newPlaceForm.reset();
-        clearValidation(newCardWindow, validationConfig);
+        clearValidation(newPlaceForm, validationConfig);
     });
 });
 
